@@ -15,4 +15,5 @@ Base URL = https://docme1.p.rapidapi.com
  **HM3**
    - get HM3 for a patient: /patient/`patient_id`/hm3, @GET, Response: {"state":"`state`", "message":"`message`"}, `state`, `message` - String
  
- Test API: https://rapidapi.com/perfexia-health-perfexia-health-default/api/docme1/
+Test API: https://rapidapi.com/perfexia-health-perfexia-health-default/api/docme1/
+API Docs: https://docme-perfexia.atlassian.net/wiki/spaces/DA/pages/97157121/Overview
