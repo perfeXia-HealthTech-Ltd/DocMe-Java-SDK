@@ -1,4 +1,9 @@
 # API
+
+
+Base URL = https://docme1.p.rapidapi.com
+
+
 **Patient**
   - get patient: /patient/`patient_id`, `patient_id` - String, @GET, Response: { "id": "`patient_id`"} on success, {"detail": "Not Found"} else
   - new patient: /patient, @POST, Body: {}, Response: { "id": "`patient_id`"} on success
