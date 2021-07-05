@@ -1,6 +1,7 @@
 package Interactor
 
 import Api.Api
+import Data.Measurement
 import Data.Patient
 
 
@@ -43,5 +44,10 @@ class Interactor(val apiService: Api) {
     fun newPatient(): Patient {
         val callPatient: Call<Patient> = apiService.newPatient()
         return callPatient.execute().body()!!
+    }
+
+    fun getMeasurement(patientId: String, measurementId: String): Measurement {
+        val callMeasurement: Call<Measurement> = apiService.getMeasurement(patientId, measurementId)
+        return callMeasurement.execute().body()!!
     }
 }

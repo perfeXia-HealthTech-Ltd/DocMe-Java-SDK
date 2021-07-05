@@ -1,7 +1,9 @@
-package com.domain.docme
+package com.driftique.docme
 
 import Api.Api
+import Data.Measurement
 import Data.Patient
+import Data.State
 import Interactor.Interactor
 import Interactor.createRetrofitApi
 
@@ -40,4 +42,22 @@ class ExampleUnitTest {
 
         assertArrayEquals(arrayOf(Bob, Masha, Misha), arrayOf(sameBob, sameMasha, sameMisha))
     }
+
+    @Test
+    fun simpleGetMeasurment() {
+        val patientId: String = "5b9e968c-667c-4160-89d4-1abea68e84c3"
+        val measurementId: String = "ce81f59d-2375-4531-85fd-e1f4fe247b10"
+
+        val api: Api = createRetrofitApi()
+        val interactor =  Interactor(api)
+
+        val requested = Measurement(id = "ce81f59d-2375-4531-85fd-e1f4fe247b10",
+                                                 status = State.SUCCESS,
+                                                 timestamp = 1624224079)
+        val measurementForPatient: Measurement = interactor.getMeasurement(patientId, measurementId)
+
+        assertEquals(requested, measurementForPatient)
+    }
+
+
 }

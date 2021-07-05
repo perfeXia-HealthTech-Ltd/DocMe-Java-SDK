@@ -1,4 +1,4 @@
-package com.domain.docme
+package com.driftique.docme
 
 import org.junit.Test
 

@@ -1,5 +1,6 @@
 package Api
 
+import Data.Measurement
 import Data.Patient
 import retrofit2.Call
 import retrofit2.http.POST
@@ -13,4 +14,11 @@ interface Api {
 
     @POST("/patient")
     fun newPatient(): Call<Patient>
+
+    @GET("/patient/{patientId}/measurement/{measurementId}")
+    fun getMeasurement(@Path("patientId") patientId: String,
+                       @Path("measurementId") measurementId: String)
+                       : Call<Measurement>
+
+
 }
