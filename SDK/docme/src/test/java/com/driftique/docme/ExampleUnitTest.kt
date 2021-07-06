@@ -1,5 +1,6 @@
 package com.driftique.docme
 
+import android.os.Environment
 import com.driftique.docme.Api.Api
 import com.driftique.docme.Api.Data.Conclusion
 import com.driftique.docme.Api.Data.Measurement
@@ -127,8 +128,6 @@ class ExampleUnitTest {
 
         assertEquals(requested, conclusion)
     }
-
-
 
 
 

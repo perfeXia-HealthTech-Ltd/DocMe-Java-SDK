@@ -41,14 +41,17 @@ fun createRetrofitApi(): Api {
 
 
 
-class UploadService(val client: OkHttpClient) {
+class Interactor(val apiService: Api) {
+
+    val gson = Gson()
+
     val MEDIA_TYPE_MP4 = MediaType.parse("video/mp4")
 
     data class TestModel(val id       : String,
                          val status   : State,
                          val timestamp: Long)
 
-    fun uploadVideo(patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
+    fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
         val requestBody: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("video", videoName, RequestBody.create(MEDIA_TYPE_MP4,FileInputStream(video).readBytes() /*video*/))
@@ -60,15 +63,12 @@ class UploadService(val client: OkHttpClient) {
             .addHeader("X-RapidAPI-Key", KEY)
             .post(requestBody).build()
 
-        val gson = Gson()
+
         var testModel = gson.fromJson(client.newCall(request).execute().body()!!.string(), TestModel::class.java)
 
         return Measurement(id = testModel.id, status = testModel.status, timestamp = testModel.timestamp)
     }
-}
 
-
-class Interactor(val apiService: Api) {
     fun getPatient(patientId: String): Patient {
         val callPatient: Call<Patient> = apiService.getPatient(patientId)
         return callPatient.execute().body()!!
@@ -86,7 +86,7 @@ class Interactor(val apiService: Api) {
 
     fun newMeasurement(patientId: String, measurementTimestamp: Long/*, video: ByteArray*/, video: File, videoName: String): Measurement {
         val client = OkHttpClient()
-        return UploadService(client).uploadVideo(patientId, video, videoName, measurementTimestamp)
+        return uploadVideo(client, patientId, video, videoName, measurementTimestamp)
     }
 
     fun getHM3ForPatient(patientId: String): Conclusion {

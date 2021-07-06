@@ -2,7 +2,6 @@ package com.driftique.docme.Api.Data
 
 import com.driftique.docme.Api.Api
 import com.driftique.docme.Interactor.Interactor
-import com.driftique.docme.Interactor.UploadService
 import com.driftique.docme.Interactor.createRetrofitApi
 import okhttp3.OkHttpClient
 import java.io.File
