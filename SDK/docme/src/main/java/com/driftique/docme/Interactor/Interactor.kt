@@ -1,8 +1,7 @@
 package com.driftique.docme.Interactor
 
-
+import android.media.MediaPlayer
 import com.driftique.docme.Api.Api
-import com.driftique.docme.Api.Tmp
 import com.driftique.docme.Api.Data.Conclusion
 import com.driftique.docme.Api.Data.Measurement
 import com.driftique.docme.Api.Data.Patient
@@ -13,8 +12,8 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileInputStream
-import java.io.IOException
 
 
 val BASE_URL = "https://docme1.p.rapidapi.com"
@@ -39,6 +38,23 @@ fun createRetrofitApi(): Api {
     return retrofit_client.create(Api::class.java)
 }
 
+fun timeInSeconds(pathToFile: String): Int{
+//    val retriever = MediaMetadataRetriever()
+//
+//    retriever.setDataSource(pathToFile)
+//    val time: String? = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+//    val timeInMillisec = time!!.toLong()
+//    retriever.release()
+//
+//    return timeInMillisec/ 1000
+
+    val mediaPlayer = MediaPlayer()
+    mediaPlayer.setDataSource(pathToFile)
+    mediaPlayer.prepare()
+    val time: Int = mediaPlayer.duration
+    return time / 1000
+}
+
 
 
 class Interactor(val apiService: Api) {
@@ -46,15 +62,17 @@ class Interactor(val apiService: Api) {
     val gson = Gson()
 
     val MEDIA_TYPE_MP4 = MediaType.parse("video/mp4")
+    val MEDIA_TYPE_MOV = MediaType.parse("video/quicktime")
 
     data class TestModel(val id       : String,
                          val status   : State,
                          val timestamp: Long)
 
-    fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
+    private fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
         val requestBody: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("video", videoName, RequestBody.create(MEDIA_TYPE_MP4,FileInputStream(video).readBytes() /*video*/))
+            .addFormDataPart("video", videoName, RequestBody.create(MEDIA_TYPE_MP4,FileInputStream(video).readBytes()))
+            .addFormDataPart("video", videoName, RequestBody.create(MEDIA_TYPE_MOV,FileInputStream(video).readBytes()))
             .addFormDataPart("timestamp", measurementTimestamp.toString())
             .build()
 
@@ -63,8 +81,9 @@ class Interactor(val apiService: Api) {
             .addHeader("X-RapidAPI-Key", KEY)
             .post(requestBody).build()
 
-
+        val duration = timeInSeconds(video.path)
         var testModel = gson.fromJson(client.newCall(request).execute().body()!!.string(), TestModel::class.java)
+
 
         return Measurement(id = testModel.id, status = testModel.status, timestamp = testModel.timestamp)
     }
@@ -77,6 +96,11 @@ class Interactor(val apiService: Api) {
     fun newPatient(): Patient {
         val callPatient: Call<Patient> = apiService.newPatient()
         return callPatient.execute().body()!!
+    }
+
+    fun deletePatient(patientId: String) {
+        val deletedPatient: Call<Unit> = apiService.deletePatient(patientId)
+        deletedPatient.execute()
     }
 
     fun getMeasurement(patientId: String, measurementId: String): Measurement {
