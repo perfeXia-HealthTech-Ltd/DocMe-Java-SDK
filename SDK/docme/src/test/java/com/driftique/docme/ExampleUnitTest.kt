@@ -9,6 +9,7 @@ import com.driftique.docme.Api.Data.State
 import com.driftique.docme.Interactor.BASE_URL
 import com.driftique.docme.Interactor.Interactor
 import com.driftique.docme.Interactor.createRetrofitApi
+import com.driftique.docme.Interactor.timeInSeconds
 import okhttp3.*
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -16,6 +17,7 @@ import org.junit.Test
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+
 
 
 /**
@@ -83,14 +85,36 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun newMeasurement() {
+    fun newMeasurementMP4Video() {
+        val api: Api = createRetrofitApi()
+        val interactor =  Interactor(api)
+        val Bob: Patient = interactor.newPatient()
+        val measurementTimestamp: Long = 1624224079
+        val pathToFile = "/home/alex-criwer/Downloads/Test/video.mp4"
+
+
+        //val desc = FileInputStream(File(pathToFile)).fd
+        val duration = timeInSeconds(pathToFile)
+        val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
+                                                      File(pathToFile),
+                                            "video.mp4")
+
+        val requested = Measurement(id        = result.id,
+                                    status    = State.PROCESSING,
+                                    timestamp = 1624224079)
+
+        assertEquals(result, requested)
+    }
+
+    @Test
+    fun newMeasurementMOVVideo() {
         val api: Api = createRetrofitApi()
         val interactor =  Interactor(api)
         val Bob: Patient = interactor.newPatient()
         val measurementTimestamp: Long = 1624224079
         val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
-                                                      File("/home/alex-criwer/Downloads/Test/video.mp4"),
-                                            "video.mp")
+            File("/home/alex-criwer/Downloads/Test/sample.mov"),
+            "sample.mov")
 
         val requested = Measurement(id        = result.id,
                                     status    = State.PROCESSING,
