@@ -1,4 +1,4 @@
-package com.driftique.docme
+package com.docme.docme
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

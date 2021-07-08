@@ -1,24 +1,18 @@
-package com.driftique.docme
+package com.docme.docme
 
-import android.content.Intent
-import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
-import android.provider.DocumentsContract
 import android.util.Log
-import android.view.View
-import android.widget.MediaController
-import android.widget.VideoView
-import com.driftique.docme.Api.Api
-import com.driftique.docme.Api.Data.Measurement
-import com.driftique.docme.Api.Data.Patient
-import com.driftique.docme.Interactor.Interactor
-import com.driftique.docme.Interactor.createRetrofitApi
-import com.driftique.docme.Interactor.timeInSeconds
+import com.docme.docme.Api.Api
+import com.docme.docme.Api.Data.Measurement
+import com.docme.docme.Api.Data.Patient
+import com.docme.docme.Api.Data.Patient.Companion.newPatient
+import com.docme.docme.Interactor.Interactor
+import com.docme.docme.Interactor.createRetrofitApi
+import com.docme.docme.Interactor.timeInSeconds
 import java.io.File
 
 
@@ -45,15 +39,15 @@ class MainActivity : AppCompatActivity() {
         val t = HandlerThread("new_thread")
         t.start()
         Handler(t.looper).post {
-            Log.d("request", interactor.newPatient().toString())
-            val Bob: Patient = interactor.newPatient()
+            Log.d("request", newPatient().toString())
+            val Bob: Patient = newPatient()
             val measurementTimestamp: Long = 1624224079
             val fileVideo = tmp.path + "/video1.mp4"
 
             val duration = timeInSeconds(fileVideo)
             Log.d("duration", duration.toString())
 
-            val result: Measurement =  Bob.newMeasurement(measurementTimestamp, File(fileVideo), "video1.mp4")
+            val result: Measurement =  Bob.newMeasurement(measurementTimestamp, File(fileVideo))
 
             
         }
@@ -71,4 +65,4 @@ class MainActivity : AppCompatActivity() {
 // сервер не доступен, мы падаем
 // не быть интернета, в измерении еррор
 // если айдишник пустой, то падаем throw exeption
-//
+

@@ -1,4 +1,4 @@
-package com.driftique.docme
+package com.docme.docme
 
 import org.junit.Test
 

@@ -1,8 +1,8 @@
-package com.driftique.docme.Api
+package com.docme.docme.Api
 
-import com.driftique.docme.Api.Data.Conclusion
-import com.driftique.docme.Api.Data.Measurement
-import com.driftique.docme.Api.Data.Patient
+import com.docme.docme.Api.Data.Conclusion
+import com.docme.docme.Api.Data.Measurement
+import com.docme.docme.Api.Data.Patient
 import retrofit2.Call
 import retrofit2.http.*
 

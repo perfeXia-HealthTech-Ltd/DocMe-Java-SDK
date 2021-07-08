@@ -1,22 +1,24 @@
-package com.driftique.docme.Interactor
+package com.docme.docme.Interactor
 
 import android.media.MediaPlayer
-import com.driftique.docme.Api.Api
-import com.driftique.docme.Api.Data.Conclusion
-import com.driftique.docme.Api.Data.Measurement
-import com.driftique.docme.Api.Data.Patient
+import com.docme.docme.Api.Api
+import com.docme.docme.Api.Data.Conclusion
+import com.docme.docme.Api.Data.Measurement
+import com.docme.docme.BuildConfig
 import com.google.gson.Gson
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
-import java.io.FileDescriptor
 import java.io.FileInputStream
 
 
 val BASE_URL = "https://docme1.p.rapidapi.com"
 val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
+
+val MIN_TIME_LIMIT = 10
+val MAX_TIME_LIMIT = 20
 
 fun createRetrofitApi(): Api {
 
@@ -65,10 +67,10 @@ class Interactor(val apiService: Api) {
                                      videoName: String,
                                      measurementTimestamp: Long): Measurement {
 
-//        val duration = timeInSeconds(video.path)
-//        if (duration < 10 || duration > 20) {
-//           throw Exception("not appropriate duration of a videoFile")
-//        }
+        val duration = timeInSeconds(video.path)
+        if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
+           throw Exception("not appropriate duration of a videoFile")
+        }
 
         val requestBody: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
@@ -81,9 +83,15 @@ class Interactor(val apiService: Api) {
             .addHeader("X-RapidAPI-Key", KEY)
             .post(requestBody).build()
 
-        var testModel = gson.fromJson(client.newCall(request).execute().body()!!.string(), TestModel::class.java)
 
-        return Measurement(id = testModel.id, status = testModel.status, timestamp = testModel.timestamp)
+        val serverResponse = client.newCall(request).execute()
+        if (serverResponse.code() == 200){
+            var testModel = gson.fromJson(serverResponse.body()!!.string(), TestModel::class.java)
+            return Measurement(id = testModel.id, status = testModel.status, timestamp = testModel.timestamp)
+        } else {
+            throw  DocMeServerException(serverResponse.message())
+        }
+
     }
 
     private fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
@@ -100,34 +108,44 @@ class Interactor(val apiService: Api) {
        return measurement
     }
 
-    fun getPatient(patientId: String): Patient {
-        val callPatient: Call<Patient> = apiService.getPatient(patientId)
-        return callPatient.execute().body()!!
-    }
-
-    fun newPatient(): Patient {
-        val callPatient: Call<Patient> = apiService.newPatient()
-        return callPatient.execute().body()!!
-    }
-
     fun deletePatient(patientId: String) {
         val deletedPatient: Call<Unit> = apiService.deletePatient(patientId)
-        deletedPatient.execute()
+        val serverResponse = deletedPatient.execute()
+        if (serverResponse.raw().code() != 200){
+            throw  DocMeServerException(serverResponse.raw().message())
+        }
     }
 
     fun getMeasurement(patientId: String, measurementId: String): Measurement {
         val callMeasurement: Call<Measurement> = apiService.getMeasurement(patientId, measurementId)
-        return callMeasurement.execute().body()!!
+        val serverResponse = callMeasurement.execute()
+        if (serverResponse.raw().code() == 200){
+            return serverResponse.body()!!
+        } else {
+            throw DocMeServerException(serverResponse.raw().message())
+        }
     }
 
-    fun newMeasurement(patientId: String, measurementTimestamp: Long/*, video: ByteArray*/, video: File, videoName: String): Measurement {
+    fun newMeasurement(patientId: String, measurementTimestamp: Long, video: File): Measurement {
         val client = OkHttpClient()
+        val videoName: String = video.name
         return uploadVideo(client, patientId, video, videoName, measurementTimestamp)
+    }
+
+    fun newMeasurement(patientId: String, measurementTimestamp: Long, videoPath: String): Measurement {
+        val client = OkHttpClient()
+        val videoName: String = videoPath.substringAfterLast('/')
+        return uploadVideo(client, patientId, File(videoPath), videoName, measurementTimestamp)
     }
 
     fun getHM3ForPatient(patientId: String): Conclusion {
         val callConclusion: Call<Conclusion> = apiService.getHM3ForPatient(patientId)
-        return callConclusion.execute().body()!!
+        val serverResponse = callConclusion.execute()
+        if (serverResponse.raw().code() == 200){
+            return serverResponse.body()!!
+        } else {
+            throw  DocMeServerException(serverResponse.raw().message())
+        }
     }
 
 }
