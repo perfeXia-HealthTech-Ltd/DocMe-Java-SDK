@@ -5,7 +5,6 @@ import com.driftique.docme.Api.Api
 import com.driftique.docme.Api.Data.Conclusion
 import com.driftique.docme.Api.Data.Measurement
 import com.driftique.docme.Api.Data.Patient
-import com.driftique.docme.Api.Data.State
 import com.google.gson.Gson
 import okhttp3.*
 import retrofit2.Call
@@ -39,15 +38,6 @@ fun createRetrofitApi(): Api {
 }
 
 fun timeInSeconds(pathToFile: String): Int{
-//    val retriever = MediaMetadataRetriever()
-//
-//    retriever.setDataSource(pathToFile)
-//    val time: String? = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-//    val timeInMillisec = time!!.toLong()
-//    retriever.release()
-//
-//    return timeInMillisec/ 1000
-
     val mediaPlayer = MediaPlayer()
     mediaPlayer.setDataSource(pathToFile)
     mediaPlayer.prepare()
@@ -65,14 +55,24 @@ class Interactor(val apiService: Api) {
     val MEDIA_TYPE_MOV = MediaType.parse("video/quicktime")
 
     data class TestModel(val id       : String,
-                         val status   : State,
+                         val status   : Measurement.Companion.State,
                          val timestamp: Long)
 
-    private fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
+    private fun makeUploadWithFormat(mediaType: MediaType,
+                                     client: OkHttpClient,
+                                     patientId: String,
+                                     video: File,
+                                     videoName: String,
+                                     measurementTimestamp: Long): Measurement {
+
+//        val duration = timeInSeconds(video.path)
+//        if (duration < 10 || duration > 20) {
+//           throw Exception("not appropriate duration of a videoFile")
+//        }
+
         val requestBody: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("video", videoName, RequestBody.create(MEDIA_TYPE_MP4,FileInputStream(video).readBytes()))
-            .addFormDataPart("video", videoName, RequestBody.create(MEDIA_TYPE_MOV,FileInputStream(video).readBytes()))
+            .addFormDataPart("video", videoName, RequestBody.create(mediaType, FileInputStream(video).readBytes()))
             .addFormDataPart("timestamp", measurementTimestamp.toString())
             .build()
 
@@ -81,11 +81,23 @@ class Interactor(val apiService: Api) {
             .addHeader("X-RapidAPI-Key", KEY)
             .post(requestBody).build()
 
-        val duration = timeInSeconds(video.path)
         var testModel = gson.fromJson(client.newCall(request).execute().body()!!.string(), TestModel::class.java)
 
-
         return Measurement(id = testModel.id, status = testModel.status, timestamp = testModel.timestamp)
+    }
+
+    private fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
+        val measurement: Measurement
+
+        if (videoName.substringAfterLast('.') == "mp4") {
+            measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, video, videoName, measurementTimestamp)
+        } else if (videoName.substringAfterLast('.') == "mov") {
+            measurement = makeUploadWithFormat(MEDIA_TYPE_MOV!!, client, patientId, video, videoName, measurementTimestamp)
+        } else {
+            throw Exception("not avaliable format")
+        }
+
+       return measurement
     }
 
     fun getPatient(patientId: String): Patient {

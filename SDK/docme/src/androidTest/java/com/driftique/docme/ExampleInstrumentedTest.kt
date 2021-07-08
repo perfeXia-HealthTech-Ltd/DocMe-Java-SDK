@@ -33,6 +33,3 @@ class ExampleInstrumentedTest {
         assertEquals("com.driftique.docme.test", appContext.packageName)
     }
 }
-
-// mov на if
-// delete в метод пациента

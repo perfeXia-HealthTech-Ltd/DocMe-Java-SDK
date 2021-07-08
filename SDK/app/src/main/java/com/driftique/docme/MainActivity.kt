@@ -52,14 +52,12 @@ class MainActivity : AppCompatActivity() {
 
             val duration = timeInSeconds(fileVideo)
             Log.d("duration", duration.toString())
-            if (10 <= duration && duration <= 20){
-                val result: Measurement =
-                    Bob.newMeasurement(measurementTimestamp, File(fileVideo), "video1.mp4")
-            } else {
-                throw Exception()
-            }
+
+            val result: Measurement =  Bob.newMeasurement(measurementTimestamp, File(fileVideo), "video1.mp4")
+
             
         }
+
     }
 
 //    fun onClickStart(v: View) {
@@ -74,6 +72,3 @@ class MainActivity : AppCompatActivity() {
 // не быть интернета, в измерении еррор
 // если айдишник пустой, то падаем throw exeption
 //
-
-// mov на if
-// delete в метод пациента

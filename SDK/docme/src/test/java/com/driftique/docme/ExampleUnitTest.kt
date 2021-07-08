@@ -5,7 +5,6 @@ import com.driftique.docme.Api.Api
 import com.driftique.docme.Api.Data.Conclusion
 import com.driftique.docme.Api.Data.Measurement
 import com.driftique.docme.Api.Data.Patient
-import com.driftique.docme.Api.Data.State
 import com.driftique.docme.Interactor.BASE_URL
 import com.driftique.docme.Interactor.Interactor
 import com.driftique.docme.Interactor.createRetrofitApi
@@ -61,11 +60,12 @@ class ExampleUnitTest {
         val interactor =  Interactor(api)
 
         val requested = Measurement(id        = "ce81f59d-2375-4531-85fd-e1f4fe247b10",
-                                    status    = State.SUCCESS,
+                                    status    = Measurement.Companion.State.SUCCESS,
                                     timestamp = 1624224079)
         val measurementForPatient: Measurement = interactor.getMeasurement(patientId, measurementId)
 
-        assertEquals(requested, measurementForPatient)
+        assertEquals(arrayOf(requested.id, requested.status, requested.timestamp),
+                     arrayOf(measurementForPatient.id, measurementForPatient.status, measurementForPatient.timestamp))
     }
 
     @Test
@@ -100,10 +100,12 @@ class ExampleUnitTest {
                                             "video.mp4")
 
         val requested = Measurement(id        = result.id,
-                                    status    = State.PROCESSING,
+                                    status    = Measurement.Companion.State.PROCESSING,
                                     timestamp = 1624224079)
 
-        assertEquals(result, requested)
+
+        assertEquals(arrayOf(requested.id, requested.status, requested.timestamp),
+                     arrayOf(result.id, result.status, result.timestamp))
     }
 
     @Test
@@ -117,10 +119,11 @@ class ExampleUnitTest {
             "sample.mov")
 
         val requested = Measurement(id        = result.id,
-                                    status    = State.PROCESSING,
+                                    status    = Measurement.Companion.State.PROCESSING,
                                     timestamp = 1624224079)
 
-        assertEquals(result, requested)
+        assertEquals(arrayOf(requested.id, requested.status, requested.timestamp),
+                     arrayOf(result.id, result.status, result.timestamp))
     }
 
     @Test
@@ -132,9 +135,10 @@ class ExampleUnitTest {
         val Bob: Patient = interactor.getPatient(patient_id)
         val measurement: Measurement = Bob.getMeasurement(measurement_id)
         val requested = Measurement(id        = "ce81f59d-2375-4531-85fd-e1f4fe247b10",
-                                    status    = State.SUCCESS,
+                                    status    = Measurement.Companion.State.SUCCESS,
                                     timestamp = 1624224079)
-        assertEquals(requested, measurement)
+        assertEquals(arrayOf(requested.id, requested.status, requested.timestamp),
+                     arrayOf(measurement.id, measurement.status, measurement.timestamp))
     }
 
     @Test
@@ -153,6 +157,14 @@ class ExampleUnitTest {
         assertEquals(requested, conclusion)
     }
 
+    @Test
+    fun deletePatient() {
+        val api: Api = createRetrofitApi()
+        val interactor =  Interactor(api)
+        val Bob: Patient = interactor.newPatient()
+        Bob.deletePatient()
+        // not made in docme api yet
+    }
 
 
 }
