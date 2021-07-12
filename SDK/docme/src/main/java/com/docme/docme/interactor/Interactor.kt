@@ -185,5 +185,36 @@ class Interactor(val apiService: Api) {
         }
     }
 
+    /**
+     * Creating a new [Patient]
+     * @throws [DocMeServerException] if something goes wrong with server
+     * @return new [Patient]
+     */
+    fun newPatient(): Patient {
+        val callPatient: Call<Patient> = Patient.api.newPatient()
+        val serverResponse = callPatient.execute()
+        if (serverResponse.raw().code() == 200){
+            return serverResponse.body()!!
+        } else {
+            throw  DocMeServerException(serverResponse.raw().message())
+        }
+    }
+
+    /**
+     * Getting [Patient] by id
+     * @param patientId of a patient
+     * @throws [DocMeServerException] if something goes wrong with server
+     * @return [Patient]
+     */
+    fun getPatient(patientId: String): Patient {
+        val callPatient: Call<Patient> = Patient.api.getPatient(patientId)
+        val serverResponse = callPatient.execute()
+        if (serverResponse.raw().code() == 200){
+            return serverResponse.body()!!
+        } else {
+            throw DocMeServerException(serverResponse.raw().message())
+        }
+    }
+
 }
 

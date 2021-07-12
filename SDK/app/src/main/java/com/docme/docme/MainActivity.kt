@@ -7,9 +7,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import com.docme.docme.api.Api
-import com.docme.docme.api.Data.Measurement
-import com.docme.docme.api.Data.Patient
-import com.docme.docme.api.Data.Patient.Companion.newPatient
+import com.docme.docme.data.Measurement
+import com.docme.docme.data.Patient
+import com.docme.docme.data.Patient.Companion.newPatient
 import com.docme.docme.interactor.Interactor
 import com.docme.docme.interactor.createRetrofitApi
 import com.docme.docme.interactor.timeInSeconds
