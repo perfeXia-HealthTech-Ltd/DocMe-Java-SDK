@@ -1,13 +1,13 @@
 package com.docme.docme
 
-import com.docme.docme.Api.Api
-import com.docme.docme.Api.Data.Conclusion
-import com.docme.docme.Api.Data.Measurement
-import com.docme.docme.Api.Data.Patient
-import com.docme.docme.Api.Data.Patient.Companion.getPatient
-import com.docme.docme.Api.Data.Patient.Companion.newPatient
-import com.docme.docme.Interactor.Interactor
-import com.docme.docme.Interactor.createRetrofitApi
+import com.docme.docme.api.Api
+import com.docme.docme.api.Data.Conclusion
+import com.docme.docme.api.Data.Measurement
+import com.docme.docme.api.Data.Patient
+import com.docme.docme.api.Data.Patient.Companion.getPatient
+import com.docme.docme.api.Data.Patient.Companion.newPatient
+import com.docme.docme.interactor.Interactor
+import com.docme.docme.interactor.createRetrofitApi
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test

@@ -1,10 +1,10 @@
-package com.docme.docme.Interactor
+package com.docme.docme.interactor
 
 import android.media.MediaPlayer
-import com.docme.docme.Api.Api
-import com.docme.docme.Api.Data.Patient
-import com.docme.docme.Api.Data.Conclusion
-import com.docme.docme.Api.Data.Measurement
+import com.docme.docme.api.Api
+import com.docme.docme.data.Patient
+import com.docme.docme.data.Conclusion
+import com.docme.docme.data.Measurement
 import com.google.gson.Gson
 import okhttp3.*
 import retrofit2.Call
@@ -65,7 +65,7 @@ class Interactor(val apiService: Api) {
     val MEDIA_TYPE_MP4 = MediaType.parse("video/mp4")
     val MEDIA_TYPE_MOV = MediaType.parse("video/quicktime")
 
-    data class TestModel(val id       : String,
+    data class MiddleMeasurement(val id       : String,
                          val status   : Measurement.Companion.State,
                          val timestamp: Long)
 
@@ -95,8 +95,8 @@ class Interactor(val apiService: Api) {
 
         val serverResponse = client.newCall(request).execute()
         if (serverResponse.code() == 200){
-            var testModel = gson.fromJson(serverResponse.body()!!.string(), TestModel::class.java)
-            return Measurement(id = testModel.id, status = testModel.status, timestamp = testModel.timestamp)
+            var middleMeasurement = gson.fromJson(serverResponse.body()!!.string(), MiddleMeasurement::class.java)
+            return Measurement(id = middleMeasurement.id, status = middleMeasurement.status, timestamp = middleMeasurement.timestamp)
         } else {
             throw  DocMeServerException(serverResponse.message())
         }

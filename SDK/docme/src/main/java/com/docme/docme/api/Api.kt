@@ -1,8 +1,8 @@
-package com.docme.docme.Api
+package com.docme.docme.api
 
-import com.docme.docme.Api.Data.Conclusion
-import com.docme.docme.Api.Data.Measurement
-import com.docme.docme.Api.Data.Patient
+import com.docme.docme.api.Data.Conclusion
+import com.docme.docme.api.Data.Measurement
+import com.docme.docme.api.Data.Patient
 import retrofit2.Call
 import retrofit2.http.*
 

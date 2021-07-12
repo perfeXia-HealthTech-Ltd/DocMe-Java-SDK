@@ -1,9 +1,9 @@
-package com.docme.docme.Api.Data
+package com.docme.docme.data
 
-import com.docme.docme.Api.Api
-import com.docme.docme.Interactor.DocMeServerException
-import com.docme.docme.Interactor.Interactor
-import com.docme.docme.Interactor.createRetrofitApi
+import com.docme.docme.api.Api
+import com.docme.docme.interactor.DocMeServerException
+import com.docme.docme.interactor.Interactor
+import com.docme.docme.interactor.createRetrofitApi
 import retrofit2.Call
 import java.io.File
 

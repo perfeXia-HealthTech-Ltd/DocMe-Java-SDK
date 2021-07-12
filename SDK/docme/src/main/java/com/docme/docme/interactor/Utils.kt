@@ -1,4 +1,4 @@
-package com.docme.docme.Interactor
+package com.docme.docme.interactor
 
 /**
  * Overloaded exception if smth goes wrong with server
