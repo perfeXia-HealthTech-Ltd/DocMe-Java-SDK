@@ -13,35 +13,35 @@ import java.io.File
  */
 data class Patient(var id: String = "") {
     /**
-     * Method od adding a new measurement
+     * Method of adding a new [Measurement]
      * @param measurementTimestamp time when the measurement was taken
-     * @param video file with video
-     * @return new measurement with params
+     * @param video File with video
+     * @return new [Measurement] with params
      */
     fun newMeasurement(measurementTimestamp: Long, video: File): Measurement {
         return interactor.newMeasurement(patientId = id, measurementTimestamp, video)
     }
     /**
-     * Another method od adding a new measurement
+     * Another method of adding a new [Measurement]
      * @param measurementTimestamp time when the measurement was taken
      * @param videoPath path to video
-     * @return new measurement with params
+     * @return new [Measurement] with params
      */
     fun newMeasurement(measurementTimestamp: Long, videoPath: String): Measurement {
         return interactor.newMeasurement(patientId = id, measurementTimestamp, videoPath)
     }
 
     /**
-     * Method of getting measurement by id
+     * Method of getting [Measurement] by id
      * @param measurementId id of a measurement you want
-     * @return measurement with the desired id
+     * @return [Measurement] with the desired id
      */
     fun getMeasurement(measurementId: String): Measurement {
         return interactor.getMeasurement(id, measurementId)
     }
 
     /**
-     * Method of getting HM3 for patient
+     * Method for getting HM3 for [Patient]
      * @return conclusion for patient
      */
     fun getHM3(): Conclusion {
@@ -49,7 +49,7 @@ data class Patient(var id: String = "") {
     }
 
     /**
-     * Method of deleting a patient
+     * Method of deleting a [Patient]
      */
     fun deletePatient() {
         interactor.deletePatient(id)
@@ -62,9 +62,9 @@ data class Patient(var id: String = "") {
 
 
         /**
-         * Creating a new patient
-         * @throws DocMeServerException if smth wrong with server
-         * @return new Patient
+         * Creating a new [Patient]
+         * @throws [DocMeServerException] if something goes wrong with server
+         * @return new [Patient]
          */
         fun newPatient(): Patient {
             val callPatient: Call<Patient> = api.newPatient()
@@ -77,10 +77,10 @@ data class Patient(var id: String = "") {
         }
 
         /**
-         * Getting patient by id
-         * @param patientId id of a patient
-         * @throws DocMeServerException if smth wrong with server
-         * @return patient by id
+         * Getting [Patient] by id
+         * @param patientId of a patient
+         * @throws [DocMeServerException] if something goes wrong with server
+         * @return [Patient]
          */
         fun getPatient(patientId: String): Patient {
             val callPatient: Call<Patient> = api.getPatient(patientId)
@@ -109,7 +109,7 @@ data class Measurement(
 ) {
     companion object {
         /**
-         * enum of states, which measurement can have
+         * enum of states, which [Measurement] can have
          */
         enum class State(val state: String) {
             NOT_INITIALIZED("NOT_INITIALIZED"),

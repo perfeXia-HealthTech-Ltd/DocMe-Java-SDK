@@ -1,4 +1,4 @@
-package com.docme.docme
+package com.docme.test
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +13,8 @@ import com.docme.docme.Api.Data.Patient.Companion.newPatient
 import com.docme.docme.Interactor.Interactor
 import com.docme.docme.Interactor.createRetrofitApi
 import com.docme.docme.Interactor.timeInSeconds
+import com.docme.test.R
+
 import java.io.File
 
 

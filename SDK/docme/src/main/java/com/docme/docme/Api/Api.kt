@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 /**
- * Interface of the api
+ * Interface of the API
  */
 interface Api {
     @GET("/patient/{patientId}")

@@ -2,6 +2,7 @@ package com.docme.docme.Interactor
 
 import android.media.MediaPlayer
 import com.docme.docme.Api.Api
+import com.docme.docme.Api.Data.Patient
 import com.docme.docme.Api.Data.Conclusion
 import com.docme.docme.Api.Data.Measurement
 import com.google.gson.Gson
@@ -14,13 +15,14 @@ import java.io.FileInputStream
 
 
 val BASE_URL = "https://docme1.p.rapidapi.com"
-val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
+//val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
 
 val MIN_TIME_LIMIT = 10
 val MAX_TIME_LIMIT = 20
 
 /**
  * Creating retrofit object
+ * @return [Api]
  */
 fun createRetrofitApi(): Api {
     val httpClient = OkHttpClient.Builder()
@@ -28,7 +30,7 @@ fun createRetrofitApi(): Api {
     httpClient.addInterceptor { chain ->
         val request: Request = chain.request()
             .newBuilder()
-            .addHeader("x-rapidapi-key", KEY)
+            .addHeader("x-rapidapi-key", Settings.KEY)
             .build()
         chain.proceed(request)
     }
@@ -87,7 +89,7 @@ class Interactor(val apiService: Api) {
 
         val request = Request.Builder()
             .url(BASE_URL + "/patient/" + patientId + "/measurement")
-            .addHeader("X-RapidAPI-Key", KEY)
+            .addHeader("X-RapidAPI-Key", Settings.KEY)
             .post(requestBody).build()
 
 
@@ -116,9 +118,9 @@ class Interactor(val apiService: Api) {
     }
 
     /**
-     * Function that deletes patient by id
+     * Delete [Patient] by id
      * @param patientId id of the patient to delete
-     * @throws DocMeServerException if smth goes wrong with server
+     * @throws [DocMeServerException] if smth goes wrong with server
      */
     fun deletePatient(patientId: String) {
         val deletedPatient: Call<Unit> = apiService.deletePatient(patientId)
@@ -128,10 +130,10 @@ class Interactor(val apiService: Api) {
         }
     }
     /**
-     * Function that gets measurement by patient and measurement ids
+     * Getting [Measurement] by patient and measurement ids
      * @param patientId id of the patient
      * @param measurementId id of the measurement
-     * @throws DocMeServerException if smth goes wrong with server
+     * @throws [DocMeServerException] if smth goes wrong with server
      * @return measurement
      */
     fun getMeasurement(patientId: String, measurementId: String): Measurement {
@@ -144,11 +146,11 @@ class Interactor(val apiService: Api) {
         }
     }
     /**
-     * Function that creates new measurement by patient id, measurement time stamp and video file
+     * Creating new [Measurement] by patient id, measurement time stamp and video File
      * @param patientId id of the patient
      * @param measurementTimestamp time stamp of the measurement
      * @param video video file
-     * @return new measurement
+     * @return new [Measurement]
      */
     fun newMeasurement(patientId: String, measurementTimestamp: Long, video: File): Measurement {
         val client = OkHttpClient()
@@ -160,7 +162,7 @@ class Interactor(val apiService: Api) {
      * @param patientId id of the patient
      * @param measurementTimestamp time stamp of the measurement
      * @param video video path
-     * @return new measurement
+     * @return new [Measurement]
      */
     fun newMeasurement(patientId: String, measurementTimestamp: Long, videoPath: String): Measurement {
         val client = OkHttpClient()
@@ -168,9 +170,9 @@ class Interactor(val apiService: Api) {
         return uploadVideo(client, patientId, File(videoPath), videoName, measurementTimestamp)
     }
     /**
-     * Function that gets conclusion for patient
+     * Getting [Conclusion] for patient
      * @param patientId id of the patient to get conclusion
-     * @throws DocMeServerException if smth goes wrong with server
+     * @throws [DocMeServerException] if smth goes wrong with server
      * @return conclusion
      */
     fun getHM3ForPatient(patientId: String): Conclusion {
