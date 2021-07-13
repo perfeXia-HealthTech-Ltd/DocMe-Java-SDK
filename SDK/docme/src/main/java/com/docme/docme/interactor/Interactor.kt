@@ -20,6 +20,8 @@ val BASE_URL = "https://docme1.p.rapidapi.com"
 val MIN_TIME_LIMIT = 10
 val MAX_TIME_LIMIT = 20
 
+val MAX_SIZE_IN_BYTES = 20971520
+
 /**
  * Creating retrofit object
  * @return [Api]
@@ -35,7 +37,7 @@ fun createRetrofitApi(): Api {
         chain.proceed(request)
     }
 
-    var retrofit_client: Retrofit = Retrofit.Builder()
+    val retrofit_client: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(httpClient.build())
@@ -65,10 +67,6 @@ class Interactor(val apiService: Api) {
     val MEDIA_TYPE_MP4 = MediaType.parse("video/mp4")
     val MEDIA_TYPE_MOV = MediaType.parse("video/quicktime")
 
-    data class MiddleMeasurement(val id       : String,
-                         val status   : Measurement.Companion.State,
-                         val timestamp: Long)
-
     private fun makeUploadWithFormat(mediaType: MediaType,
                                      client: OkHttpClient,
                                      patientId: String,
@@ -76,9 +74,13 @@ class Interactor(val apiService: Api) {
                                      videoName: String,
                                      measurementTimestamp: Long): Measurement {
 
+        if(video.length() > MAX_SIZE_IN_BYTES) {
+            throw NotAppropriateSize()
+        }
+
         val duration = timeInSeconds(video.path)
         if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
-           throw Exception("not appropriate duration of a videoFile")
+           throw NotAppropriateDuration()
         }
 
         val requestBody: RequestBody = MultipartBody.Builder()
@@ -95,8 +97,7 @@ class Interactor(val apiService: Api) {
 
         val serverResponse = client.newCall(request).execute()
         if (serverResponse.code() == 200){
-            var middleMeasurement = gson.fromJson(serverResponse.body()!!.string(), MiddleMeasurement::class.java)
-            return Measurement(id = middleMeasurement.id, status = middleMeasurement.status, timestamp = middleMeasurement.timestamp)
+            return gson.fromJson(serverResponse.body()!!.string(), Measurement::class.java)
         } else {
             throw  DocMeServerException(serverResponse.message())
         }
@@ -111,7 +112,7 @@ class Interactor(val apiService: Api) {
         } else if (videoName.substringAfterLast('.') == "mov") {
             measurement = makeUploadWithFormat(MEDIA_TYPE_MOV!!, client, patientId, video, videoName, measurementTimestamp)
         } else {
-            throw Exception("not avaliable format")
+            throw NotAvailableFormat()
         }
 
        return measurement
@@ -120,7 +121,7 @@ class Interactor(val apiService: Api) {
     /**
      * Delete [Patient] by id
      * @param patientId id of the patient to delete
-     * @throws [DocMeServerException] if smth goes wrong with server
+     * @throws [DocMeServerException] if something goes wrong with server
      */
     fun deletePatient(patientId: String) {
         val deletedPatient: Call<Unit> = apiService.deletePatient(patientId)
@@ -133,7 +134,7 @@ class Interactor(val apiService: Api) {
      * Getting [Measurement] by patient and measurement ids
      * @param patientId id of the patient
      * @param measurementId id of the measurement
-     * @throws [DocMeServerException] if smth goes wrong with server
+     * @throws [DocMeServerException] if something goes wrong with server
      * @return measurement
      */
     fun getMeasurement(patientId: String, measurementId: String): Measurement {
@@ -146,10 +147,10 @@ class Interactor(val apiService: Api) {
         }
     }
     /**
-     * Creating new [Measurement] by patient id, measurement time stamp and video File
+     * Creating new [Measurement] by patient id, measurement time stamp and video [File]
      * @param patientId id of the patient
      * @param measurementTimestamp time stamp of the measurement
-     * @param video video file
+     * @param video video [File]
      * @return new [Measurement]
      */
     fun newMeasurement(patientId: String, measurementTimestamp: Long, video: File): Measurement {
@@ -158,9 +159,9 @@ class Interactor(val apiService: Api) {
         return uploadVideo(client, patientId, video, videoName, measurementTimestamp)
     }
     /**
-     * Overloaded function that creates new measurement by patient id, measurement time stamp and video path
+     * Overloaded function that creates new measurement by patient id, measurement timestamp and video path
      * @param patientId id of the patient
-     * @param measurementTimestamp time stamp of the measurement
+     * @param measurementTimestamp timestamp of the measurement
      * @param video video path
      * @return new [Measurement]
      */
@@ -172,7 +173,7 @@ class Interactor(val apiService: Api) {
     /**
      * Getting [Conclusion] for patient
      * @param patientId id of the patient to get conclusion
-     * @throws [DocMeServerException] if smth goes wrong with server
+     * @throws [DocMeServerException] if something goes wrong with server
      * @return conclusion
      */
     fun getHM3ForPatient(patientId: String): Conclusion {

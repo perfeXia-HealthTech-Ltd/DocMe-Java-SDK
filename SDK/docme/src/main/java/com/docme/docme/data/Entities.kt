@@ -11,7 +11,7 @@ import java.io.File
 /**
  * Entity "Patient"
  */
-data class Patient(var id: String = "") {
+data class Patient(val id: String = "") {
     /**
      * Method of adding a new [Measurement]
      * @param measurementTimestamp time when the measurement was taken
@@ -83,10 +83,10 @@ data class Patient(var id: String = "") {
  * Entity "Measurement"
  */
 data class Measurement(
-    var id: String = "",
-    var patientId: String = "",
+    val id: String = "",
+    val patientId: String = "",
     var status: State = State.NOT_INITIALIZED,
-    var timestamp: Long = -1,
+    val timestamp: Long = -1,
     var details: String = "",
     var errorDetails: String = ""
 ) {
@@ -108,7 +108,7 @@ data class Measurement(
  * Entity "Conclusion"
  */
 data class Conclusion(
-    var id: String = "",
+    val id: String = "",
     var state: String = "",
     var message: String = ""
 )
