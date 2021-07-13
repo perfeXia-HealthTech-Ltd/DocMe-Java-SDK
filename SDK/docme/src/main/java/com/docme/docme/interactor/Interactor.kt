@@ -31,7 +31,7 @@ fun createRetrofitApi(): Api {
     httpClient.addInterceptor { chain ->
         val request: Request = chain.request()
             .newBuilder()
-            .addHeader("x-rapidapi-key", Settings.KEY)
+            .addHeader("x-rapidapi-key", Docme.KEY)
             .build()
         chain.proceed(request)
     }
@@ -90,7 +90,7 @@ class Interactor(val apiService: Api) {
 
         val request = Request.Builder()
             .url(BASE_URL + "/patient/" + patientId + "/measurement")
-            .addHeader("X-RapidAPI-Key", Settings.KEY)
+            .addHeader("X-RapidAPI-Key", Docme.KEY)
             .post(requestBody).build()
 
 

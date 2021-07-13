@@ -20,9 +20,13 @@ class NotAppropriateDuration(): Exception("DocMe response: Not available duratio
  */
 class NotAppropriateSize(): Exception("DocMe response: Not appropriate size of video, max size 20 Mb")
 
-class Settings {
+class Docme {
     companion object {
-        var KEY: String = ""
+        private var KEY: String = ""
+        fun getKey(): String {
+            return KEY
+        }
+        
         fun initSDK(api: String) {
             KEY = api
         }
