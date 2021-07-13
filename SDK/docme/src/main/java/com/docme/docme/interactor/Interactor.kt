@@ -15,7 +15,6 @@ import java.io.FileInputStream
 
 
 val BASE_URL = "https://docme1.p.rapidapi.com"
-//val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
 
 val MIN_TIME_LIMIT = 10
 val MAX_TIME_LIMIT = 20
@@ -58,7 +57,7 @@ fun timeInSeconds(pathToFile: String): Int{
 
 
 /**
- * Creating an interactor object to interact with api
+ * Creating an interactor object to interact with API
  */
 class Interactor(val apiService: Api) {
 
