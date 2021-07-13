@@ -26,7 +26,7 @@ class Docme {
         fun getKey(): String {
             return KEY
         }
-        
+
         fun initSDK(api: String) {
             KEY = api
         }
