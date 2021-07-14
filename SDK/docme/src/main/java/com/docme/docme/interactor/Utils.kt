@@ -26,10 +26,19 @@ class NotAppropriateSize(): Exception("DocMe response: Not appropriate size of v
 class Docme {
     companion object {
         private var KEY: String = ""
+
+        /**
+         * Getting API key
+         * @return API key
+         */
         fun getKey(): String {
             return KEY
         }
 
+        /**
+         * Initiating of API key
+         * @param api API key
+         */
         fun initSDK(api: String) {
             KEY = api
         }
