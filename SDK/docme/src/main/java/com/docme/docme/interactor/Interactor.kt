@@ -1,16 +1,16 @@
 package com.docme.docme.interactor
 
 import android.content.Context
-import android.content.Intent
+import android.content.res.AssetFileDescriptor
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import com.docme.docme.api.Api
-import com.docme.docme.data.Patient
 import com.docme.docme.data.Conclusion
 import com.docme.docme.data.Measurement
+import com.docme.docme.data.Patient
 import com.google.gson.Gson
 import okhttp3.*
 import retrofit2.Call
@@ -53,12 +53,34 @@ fun createRetrofitApi(): Api {
 /**
  * Function that determines the duration of the video along the path to file
  */
-fun timeInSeconds(pathToFile: String): Int{
+fun timeInSeconds(pathToFile: String): Int {
     val mediaPlayer = MediaPlayer()
     mediaPlayer.setDataSource(pathToFile)
     mediaPlayer.prepare()
     val time: Int = mediaPlayer.duration
     return time / 1000
+}
+
+/**
+ * Overloaded function that determines the duration of the video along the uri
+ */
+fun timeInSeconds(this_: Context, uri: Uri): Int {
+    val retriever: MediaMetadataRetriever = MediaMetadataRetriever()
+    retriever.setDataSource(this_, uri)
+    val time: String? = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+    val timeInMillisec: Int = time!!.toInt()
+    retriever.release()
+    return timeInMillisec / 1000
+}
+
+/**
+ * Function that determines the size of the video along the uri
+ */
+fun getFileSize(this_: Context, uri: Uri): Long? {
+    val fileDescriptor: AssetFileDescriptor? =
+        this_.getApplicationContext().getContentResolver().openAssetFileDescriptor(uri, "r")
+    val fileSize = fileDescriptor?.length
+    return fileSize
 }
 
 
@@ -180,13 +202,29 @@ class Interactor(val apiService: Api) {
         return uploadVideo(client, patientId, File(videoPath), videoName, measurementTimestamp)
     }
 
+    /**
+     * Overloaded function that creates new measurement by Context, patient id, measurement timestamp and video uri
+     * @param this_ [Context]
+     * @param patientId id of the patient
+     * @param measurementTimestamp timestamp of the measurement
+     * @param uri video Uri
+     * @return new [Measurement]
+     */
     @RequiresApi(Build.VERSION_CODES.Q)
     fun newMeasurement(this_: Context, patientId: String, measurementTimestamp: Long, uri: Uri): Measurement {
+        if (getFileSize(this_, uri)!! > MAX_SIZE_IN_BYTES) {
+            throw NotAppropriateSize()
+        }
+
+        val duration = timeInSeconds(this_, uri)
+        if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
+            throw NotAppropriateDuration()
+        }
+
         val client = OkHttpClient()
         val measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, FileInputStream(this_.contentResolver.openFile(uri, "r", null)!!.fileDescriptor).readBytes(), "video", measurementTimestamp)
         return measurement
     }
-
 
     /**
      * Getting [Conclusion] for patient

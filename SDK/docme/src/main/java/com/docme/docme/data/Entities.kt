@@ -35,6 +35,13 @@ data class Patient(val id: String = "") {
         return interactor.newMeasurement(patientId = id, measurementTimestamp, videoPath)
     }
 
+    /**
+     * Another method of adding a new [Measurement]
+     * @param this_ [Context]
+     * @param measurementTimestamp time when the measurement was taken
+     * @param uri Uri of video
+     * @return new [Measurement] with params
+     */
     @RequiresApi(Build.VERSION_CODES.Q)
     fun newMeasurement(this_: Context, measurementTimestamp: Long, uri: Uri): Measurement {
         return interactor.newMeasurement(this_, patientId = id, measurementTimestamp, uri)
