@@ -1,5 +1,9 @@
 package com.docme.docme.data
 
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.support.annotation.RequiresApi
 import com.docme.docme.api.Api
 import com.docme.docme.interactor.DocMeServerException
 import com.docme.docme.interactor.Interactor
@@ -29,6 +33,11 @@ data class Patient(val id: String = "") {
      */
     fun newMeasurement(measurementTimestamp: Long, videoPath: String): Measurement {
         return interactor.newMeasurement(patientId = id, measurementTimestamp, videoPath)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun newMeasurement(this_: Context, measurementTimestamp: Long, uri: Uri): Measurement {
+        return interactor.newMeasurement(this_, patientId = id, measurementTimestamp, uri)
     }
 
     /**

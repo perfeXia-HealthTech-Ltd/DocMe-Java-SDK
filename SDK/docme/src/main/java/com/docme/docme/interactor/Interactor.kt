@@ -1,6 +1,12 @@
 package com.docme.docme.interactor
 
+import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
+import android.os.Build
+import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import com.docme.docme.api.Api
 import com.docme.docme.data.Patient
 import com.docme.docme.data.Conclusion
@@ -69,22 +75,16 @@ class Interactor(val apiService: Api) {
     private fun makeUploadWithFormat(mediaType: MediaType,
                                      client: OkHttpClient,
                                      patientId: String,
-                                     video: File,
+                                     video: ByteArray,
                                      videoName: String,
                                      measurementTimestamp: Long): Measurement {
 
-        if(video.length() > MAX_SIZE_IN_BYTES) {
-            throw NotAppropriateSize()
-        }
-
-        val duration = timeInSeconds(video.path)
-        if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
-           throw NotAppropriateDuration()
-        }
+        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
+        Docme.initSDK(KEY)
 
         val requestBody: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("video", videoName, RequestBody.create(mediaType, FileInputStream(video).readBytes()))
+            .addFormDataPart("video", videoName,RequestBody.create(mediaType, video))
             .addFormDataPart("timestamp", measurementTimestamp.toString())
             .build()
 
@@ -106,16 +106,26 @@ class Interactor(val apiService: Api) {
     private fun uploadVideo(client: OkHttpClient, patientId: String, video: File, videoName: String, measurementTimestamp: Long): Measurement {
         val measurement: Measurement
 
+        if(video.length() > MAX_SIZE_IN_BYTES) {
+            throw NotAppropriateSize()
+        }
+
+        val duration = timeInSeconds(video.path)
+        if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
+            throw NotAppropriateDuration()
+        }
+
         if (videoName.substringAfterLast('.') == "mp4") {
-            measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, video, videoName, measurementTimestamp)
+            measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, FileInputStream(video).readBytes(), videoName, measurementTimestamp)
         } else if (videoName.substringAfterLast('.') == "mov") {
-            measurement = makeUploadWithFormat(MEDIA_TYPE_MOV!!, client, patientId, video, videoName, measurementTimestamp)
+            measurement = makeUploadWithFormat(MEDIA_TYPE_MOV!!, client, patientId, FileInputStream(video).readBytes(), videoName, measurementTimestamp)
         } else {
             throw NotAvailableFormat()
         }
 
        return measurement
     }
+
 
     /**
      * Delete [Patient] by id
@@ -169,6 +179,15 @@ class Interactor(val apiService: Api) {
         val videoName: String = videoPath.substringAfterLast('/')
         return uploadVideo(client, patientId, File(videoPath), videoName, measurementTimestamp)
     }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun newMeasurement(this_: Context, patientId: String, measurementTimestamp: Long, uri: Uri): Measurement {
+        val client = OkHttpClient()
+        val measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, FileInputStream(this_.contentResolver.openFile(uri, "r", null)!!.fileDescriptor).readBytes(), "video", measurementTimestamp)
+        return measurement
+    }
+
+
     /**
      * Getting [Conclusion] for patient
      * @param patientId id of the patient to get conclusion
