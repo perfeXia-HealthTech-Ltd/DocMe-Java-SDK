@@ -1,13 +1,14 @@
-package com.docme.docme.Api
+package com.docme.docme.api
 
-import com.docme.docme.Api.Data.Conclusion
-import com.docme.docme.Api.Data.Measurement
-import com.docme.docme.Api.Data.Patient
+import com.docme.docme.data.Conclusion
+import com.docme.docme.data.Measurement
+import com.docme.docme.data.Patient
 import retrofit2.Call
 import retrofit2.http.*
 
-data class Tmp(val measurementTimestamp: Long, val video: ByteArray)
-
+/**
+ * Interface of the API
+ */
 interface Api {
     @GET("/patient/{patientId}")
     fun getPatient(@Path("patientId") patientId: String): Call<Patient>
@@ -22,9 +23,6 @@ interface Api {
     fun getMeasurement(@Path("patientId") patientId: String,
                        @Path("measurementId") measurementId: String)
                        : Call<Measurement>
-
-    @POST("/patient/{patientId}/measurement")
-    fun newMeasurement(@Path("patientId") patientId: String, @Body tmp: Tmp): Call<Measurement>
 
     @GET("/patient/{patientId}/hm3")
     fun getHM3ForPatient(@Path("patientId") patientId: String): Call<Conclusion>
