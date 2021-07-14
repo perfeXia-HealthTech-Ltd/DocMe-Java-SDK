@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
                     val hm3 = p.getHM3()
                     Log.d("Docme TEST", hm3.state)
                     val a = 30
+                    m.status == Measurement.Companion.State.SUCCESS
                 }.start()
             }
         }
