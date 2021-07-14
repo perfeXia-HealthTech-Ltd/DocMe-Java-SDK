@@ -58,6 +58,7 @@ fun timeInSeconds(pathToFile: String): Int {
     mediaPlayer.setDataSource(pathToFile)
     mediaPlayer.prepare()
     val time: Int = mediaPlayer.duration
+    mediaPlayer.release()
     return time / 1000
 }
 
@@ -219,7 +220,8 @@ class Interactor(val apiService: Api) {
         }
 
         val client = OkHttpClient()
-        val measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, FileInputStream(context.contentResolver.openFile(uri, "r", null)!!.fileDescriptor).readBytes(), "video", measurementTimestamp)
+        val iStream = context.contentResolver.openInputStream(uri)
+        val measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, iStream!!.readBytes(), "video", measurementTimestamp)
         return measurement
     }
 
