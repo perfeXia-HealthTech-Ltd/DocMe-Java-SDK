@@ -6,7 +6,6 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
 import com.docme.docme.api.Api
 import com.docme.docme.data.Conclusion
 import com.docme.docme.data.Measurement
@@ -58,15 +57,16 @@ fun timeInSeconds(pathToFile: String): Int {
     mediaPlayer.setDataSource(pathToFile)
     mediaPlayer.prepare()
     val time: Int = mediaPlayer.duration
+    mediaPlayer.release()
     return time / 1000
 }
 
 /**
- * Overloaded function that determines the duration of the video along the uri
+ * Overloaded function that determines the duration of the video along the [Uri]
  */
-fun timeInSeconds(this_: Context, uri: Uri): Int {
+fun timeInSeconds(context: Context, uri: Uri): Int {
     val retriever: MediaMetadataRetriever = MediaMetadataRetriever()
-    retriever.setDataSource(this_, uri)
+    retriever.setDataSource(context, uri)
     val time: String? = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
     val timeInMillisec: Int = time!!.toInt()
     retriever.release()
@@ -74,11 +74,11 @@ fun timeInSeconds(this_: Context, uri: Uri): Int {
 }
 
 /**
- * Function that determines the size of the video along the uri
+ * Function that determines the size of the video along the [Uri]
  */
-fun getFileSize(this_: Context, uri: Uri): Long? {
+fun getFileSize(context: Context, uri: Uri): Long? {
     val fileDescriptor: AssetFileDescriptor? =
-        this_.getApplicationContext().getContentResolver().openAssetFileDescriptor(uri, "r")
+        context.getApplicationContext().getContentResolver().openAssetFileDescriptor(uri, "r")
     val fileSize = fileDescriptor?.length
     return fileSize
 }
@@ -101,9 +101,6 @@ class Interactor(val apiService: Api) {
                                      videoName: String,
                                      measurementTimestamp: Long): Measurement {
 
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
-        Docme.initSDK(KEY)
-
         val requestBody: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("video", videoName,RequestBody.create(mediaType, video))
@@ -111,7 +108,7 @@ class Interactor(val apiService: Api) {
             .build()
 
         val request = Request.Builder()
-            .url(BASE_URL + "/patient/" + patientId + "/measurement")
+            .url("$BASE_URL/patient/$patientId/measurement")
             .addHeader("X-RapidAPI-Key", Docme.getKey())
             .post(requestBody).build()
 
@@ -203,26 +200,26 @@ class Interactor(val apiService: Api) {
     }
 
     /**
-     * Overloaded function that creates new measurement by Context, patient id, measurement timestamp and video uri
-     * @param this_ [Context]
+     * Overloaded function that creates new measurement by Context, patient id, measurement timestamp and video [Uri]
+     * @param context [Context]
      * @param patientId id of the patient
      * @param measurementTimestamp timestamp of the measurement
-     * @param uri video Uri
+     * @param uri video [Uri]
      * @return new [Measurement]
      */
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun newMeasurement(this_: Context, patientId: String, measurementTimestamp: Long, uri: Uri): Measurement {
-        if (getFileSize(this_, uri)!! > MAX_SIZE_IN_BYTES) {
+    fun newMeasurement(context: Context, patientId: String, measurementTimestamp: Long, uri: Uri): Measurement {
+        if (getFileSize(context, uri)!! > MAX_SIZE_IN_BYTES) {
             throw NotAppropriateSize()
         }
 
-        val duration = timeInSeconds(this_, uri)
+        val duration = timeInSeconds(context, uri)
         if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
             throw NotAppropriateDuration()
         }
 
         val client = OkHttpClient()
-        val measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, FileInputStream(this_.contentResolver.openFile(uri, "r", null)!!.fileDescriptor).readBytes(), "video", measurementTimestamp)
+        val iStream = context.contentResolver.openInputStream(uri)
+        val measurement = makeUploadWithFormat(MEDIA_TYPE_MP4!!, client, patientId, iStream!!.readBytes(), "video", measurementTimestamp)
         return measurement
     }
 

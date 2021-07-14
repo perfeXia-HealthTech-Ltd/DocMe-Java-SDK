@@ -3,7 +3,6 @@ package com.docme.docme.data
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
 import com.docme.docme.api.Api
 import com.docme.docme.interactor.DocMeServerException
 import com.docme.docme.interactor.Interactor
@@ -37,14 +36,13 @@ data class Patient(val id: String = "") {
 
     /**
      * Another method of adding a new [Measurement]
-     * @param this_ [Context]
+     * @param context [Context]
      * @param measurementTimestamp time when the measurement was taken
-     * @param uri Uri of video
+     * @param uri [Uri] of video
      * @return new [Measurement] with params
      */
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun newMeasurement(this_: Context, measurementTimestamp: Long, uri: Uri): Measurement {
-        return interactor.newMeasurement(this_, patientId = id, measurementTimestamp, uri)
+    fun newMeasurement(context: Context, measurementTimestamp: Long, uri: Uri): Measurement {
+        return interactor.newMeasurement(context, patientId = id, measurementTimestamp, uri)
     }
 
     /**
