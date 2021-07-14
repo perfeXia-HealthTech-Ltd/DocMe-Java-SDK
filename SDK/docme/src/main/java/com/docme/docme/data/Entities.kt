@@ -3,7 +3,6 @@ package com.docme.docme.data
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
 import com.docme.docme.api.Api
 import com.docme.docme.interactor.DocMeServerException
 import com.docme.docme.interactor.Interactor
@@ -42,7 +41,6 @@ data class Patient(val id: String = "") {
      * @param uri [Uri] of video
      * @return new [Measurement] with params
      */
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun newMeasurement(context: Context, measurementTimestamp: Long, uri: Uri): Measurement {
         return interactor.newMeasurement(context, patientId = id, measurementTimestamp, uri)
     }

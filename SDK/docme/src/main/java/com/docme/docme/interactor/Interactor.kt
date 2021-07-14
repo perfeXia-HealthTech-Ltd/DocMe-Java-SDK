@@ -6,7 +6,6 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
-import android.support.annotation.RequiresApi
 import com.docme.docme.api.Api
 import com.docme.docme.data.Conclusion
 import com.docme.docme.data.Measurement
@@ -208,7 +207,6 @@ class Interactor(val apiService: Api) {
      * @param uri video [Uri]
      * @return new [Measurement]
      */
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun newMeasurement(context: Context, patientId: String, measurementTimestamp: Long, uri: Uri): Measurement {
         if (getFileSize(context, uri)!! > MAX_SIZE_IN_BYTES) {
             throw NotAppropriateSize()
