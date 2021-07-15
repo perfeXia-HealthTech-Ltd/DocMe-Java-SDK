@@ -2,64 +2,67 @@ package com.docme.test
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.*
-import android.support.v7.app.AppCompatActivity
+import android.os.Build
+import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.docme.docme.api.Api
-import com.docme.docme.data.Measurement
+import android.widget.Toast
 import com.docme.docme.data.Patient
-import com.docme.docme.data.Patient.Companion.newPatient
 import com.docme.docme.interactor.Docme
-import com.docme.docme.interactor.Interactor
-import com.docme.docme.interactor.createRetrofitApi
-import com.docme.docme.interactor.timeInSeconds
 
-import java.io.File
-import java.util.jar.Manifest
-
-
-val PERMIT_READ_FILES = 1
-val PICK_VIDEO_FILE = 1
+const val PERMIT_READ_FILES = 1
+const val PICK_VIDEO_FILE = 1
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = MainActivity::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Thread { runTest() }.start()
 
         ActivityCompat.requestPermissions(
             this, arrayOf(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
             ), PERMIT_READ_FILES
         )
-
-        Thread {
-            runTest()
-        }.start()
-
-        openFile()
     }
 
     private fun runTest() {
         Docme.initSDK("383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0")
+
         val p = Patient.newPatient()
         val pCopy = Patient.getPatient(p.id)
-        Log.d("Docme test", "patient id=${p.id}, patient copy id=${pCopy.id}")
+        Log.d(TAG, "patient id=${p.id}, patient copy id=${pCopy.id}, ${p.id == pCopy.id}")
 
         try {
-            val another = Patient.getPatient("not_existing_id")
+            val notExisted = Patient.getPatient("not_existing_id")
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         p.deletePatient()
         try {
-            val another = Patient.getPatient(p.id)
+            val deleted = Patient.getPatient(p.id)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun runTestWithFile(uri: Uri) {
+        val patient = Patient.newPatient()
+        Log.d(TAG, "Uri path: ${uri.path}")
+
+        val measurement = patient.newMeasurement(this,228, uri)
+        Log.d(TAG, "${measurement.status}")
+
+        val hm3 = patient.getHM3()
+        Log.d(TAG, hm3.state)
     }
 
     private fun openFile() {
@@ -77,24 +80,28 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, resultData)
         if (requestCode == PICK_VIDEO_FILE
             && resultCode == Activity.RESULT_OK) {
-            // The result data contains a URI for the document or directory that
-            // the user selected.
             resultData?.data?.also { uri ->
                 Thread {
-                    val p = Patient.newPatient()
-                    Log.d("Docme TEST", "Path: $uri")
-                    val m = p.newMeasurement(this, 228,uri)
-                    val hm3 = p.getHM3()
-                    Log.d("Docme TEST", hm3.state)
-                    val a = 30
-                    m.status == Measurement.Companion.State.SUCCESS
+                    runTestWithFile(uri)
                 }.start()
             }
         }
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            PERMIT_READ_FILES -> {
+                if ((grantResults.isNotEmpty() &&
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    openFile()
+                } else {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+            else -> {
+            }
+        }
+    }
 }
-
-
-
-
-
