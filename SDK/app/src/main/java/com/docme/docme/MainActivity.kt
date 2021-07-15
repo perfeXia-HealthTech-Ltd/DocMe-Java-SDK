@@ -15,7 +15,7 @@ import com.docme.docme.data.Patient
 import com.docme.docme.interactor.Docme
 
 const val PERMIT_READ_FILES = 1
-const val PICK_VIDEO_FILE = 1
+const val PICK_VIDEO_FILE = 2
 
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
@@ -96,7 +96,8 @@ class MainActivity : AppCompatActivity() {
                             grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     openFile()
                 } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Permission denied for reading file",
+                        Toast.LENGTH_SHORT).show()
                 }
                 return
             }
