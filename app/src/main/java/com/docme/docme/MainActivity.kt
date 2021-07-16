@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun runTest() {
-        Docme.initSDK("383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0")
+        Docme.initSDK("YOUR_DOCME_API_KEY")
 
         val p = Patient.newPatient()
         val pCopy = Patient.getPatient(p.id)

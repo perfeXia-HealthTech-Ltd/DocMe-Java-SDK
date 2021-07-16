@@ -52,7 +52,7 @@ class ExampleUnitTest {
         val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val measurementTimestamp: Long = 1624224079
-        val pathToFile: String = "/home/alex-criwer/Downloads/Test/video.mp4"
+        val pathToFile: String = "VIDEO_PATH_ON_YOUR_COMPUTER"
 
         val Bob: Patient = newPatient()
         val measurement:  Measurement = Bob.newMeasurement(measurementTimestamp, File(pathToFile))
@@ -88,7 +88,7 @@ class ExampleUnitTest {
         val interactor =  Interactor(api)
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
-        val pathToFile = "/home/alex-criwer/Downloads/Test/video.mp4"
+        val pathToFile = "VIDEO_PATH_ON_YOUR_COMPUTER"
 
 
         //val desc = FileInputStream(File(pathToFile)).fd
@@ -111,7 +111,7 @@ class ExampleUnitTest {
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
         val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
-            File("/home/alex-criwer/Downloads/Test/sample.mov"))
+            File("VIDEO_PATH_ON_YOUR_COMPUTER"))
 
         val requested = Measurement(id        = result.id,
                                     status    = Measurement.Companion.State.PROCESSING,
@@ -131,7 +131,7 @@ class ExampleUnitTest {
 
         val Bob: Patient = newPatient()
         val  measurement:  Measurement = Bob.newMeasurement(measurementTimestamp,
-            File("/home/alex-criwer/Downloads/Test/sample.mov"))
+            File("VIDEO_PATH_ON_YOUR_COMPUTER"))
 
         val requested = Bob.getMeasurement(measurement.id)
         assertEquals(arrayOf(requested.id, requested.status, requested.timestamp),
