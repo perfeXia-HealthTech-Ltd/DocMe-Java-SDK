@@ -38,3 +38,6 @@ Documentation is avaliable in docs directory. Run index.html from your web brows
 Video requirements for uploading:
 - Format mp4/mov
 - Duration 10 - 20 seconds
+
+## Tests
+You may build and run test app from `app` directory
