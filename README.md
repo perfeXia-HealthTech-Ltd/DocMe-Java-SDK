@@ -40,4 +40,4 @@ Video requirements for uploading:
 - Duration 10 - 20 seconds
 
 ## Tests
-You may build and run test app from `app` directory
+You may build and run test app from `app` directory and see the process from `logcat`
