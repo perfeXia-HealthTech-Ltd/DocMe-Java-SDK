@@ -35,6 +35,8 @@ gradlew.bat assemble
 ## Docs
 Full documentation is avaliable in docs directory. Run index.html from your web browser to open it.
 
+**Notice!** All calls are synchronous so you should create new thread to make requests over HTTP.
+
 ### Init SDK
 ```sh
 DocMe.initSDK("YOUR_DOCME_API_KEY")
@@ -59,19 +61,19 @@ Your app should grant all privileges for taking video file.
 ##### Working with result of measurement response
 ```sh
 if (mByUri.status == Measurement.STATE.SUCCESS) {
-    // Proceed
+// Proceed
 }
 ```
 Full *STATE* list:
-  - NOT_INITIALIZED
-  - INITIALIZED
-  - PROCESSING
-  - SUCCESS
-  - ERROR
+- NOT_INITIALIZED
+- INITIALIZED
+- PROCESSING
+- SUCCESS
+- ERROR
 
 ```sh
 if (mByUri.status == Measurement.STATE.ERROR) {
-    Log.d("Error", mByUri.errorDetails) // Not empty if only above condition is true
+Log.d("Error", mByUri.errorDetails) // Not empty if only above condition is true
 }
 ```
 
@@ -83,8 +85,11 @@ Log.d("Conclusion", "${hm3.state}, ${hm3.message}")
 
 ### Exceptions
 `DocMeServerException` will be thrown on any non 200 return status
+
 `NotAvailableFormatException` will be thrown on wrong video file format
+
 `NotAppropriateDurationException` will be thrown on wrong video duration
+
 `NotAppropriateSizeException` will be thrown on wrong video file size
 
 ### Other
