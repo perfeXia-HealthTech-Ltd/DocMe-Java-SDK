@@ -23,6 +23,7 @@ import java.io.File
  */
 class ExampleUnitTest {
     private val KEY = "YOUR_DOCME_API_KEY"
+    private val PATH_TO_VIDEO = "PATH_TO_YOUR_VIDEO"
 
     @Test
     fun idIsCorrect() {
@@ -85,7 +86,7 @@ class ExampleUnitTest {
         val interactor =  Interactor(api)
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
-        val pathToFile = "VIDEO_PATH_ON_YOUR_COMPUTER"
+        val pathToFile = PATH_TO_VIDEO
 
 
         //val desc = FileInputStream(File(pathToFile)).fd
@@ -107,7 +108,7 @@ class ExampleUnitTest {
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
         val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
-            File("VIDEO_PATH_ON_YOUR_COMPUTER"))
+            File(PATH_TO_VIDEO))
 
         val requested = Measurement(id        = result.id,
                                     status    = Measurement.Companion.State.PROCESSING,
@@ -126,7 +127,7 @@ class ExampleUnitTest {
 
         val Bob: Patient = newPatient()
         val  measurement:  Measurement = Bob.newMeasurement(measurementTimestamp,
-            File("VIDEO_PATH_ON_YOUR_COMPUTER"))
+            File(PATH_TO_VIDEO))
 
         val requested = Bob.getMeasurement(measurement.id)
         assertEquals(arrayOf(requested.id, requested.status, requested.timestamp),
@@ -140,7 +141,7 @@ class ExampleUnitTest {
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
         val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
-            "/home/alex-criwer/Downloads/Test/sample.mov")
+            PATH_TO_VIDEO)
 
         val requested = Measurement(id        = result.id,
                                     status    = Measurement.Companion.State.PROCESSING,
@@ -171,7 +172,7 @@ class ExampleUnitTest {
         Bob.deletePatient()
        // val sameBob = getPatient(Bob.id)
 
-        // not made in docme api yet
+        // Not implemented in DocMe api yet
     }
 
 
