@@ -1,13 +1,12 @@
 package com.docme.docme
 
-import android.net.Uri
 import com.docme.docme.api.Api
 import com.docme.docme.data.Conclusion
 import com.docme.docme.data.Measurement
 import com.docme.docme.data.Patient
 import com.docme.docme.data.Patient.Companion.getPatient
 import com.docme.docme.data.Patient.Companion.newPatient
-import com.docme.docme.interactor.Docme
+import com.docme.docme.interactor.DocMe
 import com.docme.docme.interactor.Interactor
 import com.docme.docme.interactor.createRetrofitApi
 import org.junit.Assert.assertArrayEquals
@@ -27,7 +26,7 @@ class ExampleUnitTest {
 
     @Test
     fun idIsCorrect() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val Bob: Patient = newPatient()
         val sameBob: Patient = getPatient(Bob.id)
         assertEquals(sameBob.id, Bob.id)
@@ -35,7 +34,7 @@ class ExampleUnitTest {
 
     @Test
     fun sameResult() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val Bob: Patient = newPatient()
         val Masha: Patient = newPatient()
         val Misha: Patient = newPatient()
@@ -50,7 +49,7 @@ class ExampleUnitTest {
 
     @Test
     fun simpleGetMeasurment() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val measurementTimestamp: Long = 1624224079
         val pathToFile: String = "VIDEO_PATH_ON_YOUR_COMPUTER"
 
@@ -65,7 +64,7 @@ class ExampleUnitTest {
 
     @Test
     fun getConclusion() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val api: Api = createRetrofitApi()
         val interactor =  Interactor(api)
         val requested = Conclusion(state   = "HealthyState",
@@ -81,7 +80,7 @@ class ExampleUnitTest {
 
     @Test
     fun newMeasurementMP4Video() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val api: Api = createRetrofitApi()
         val interactor =  Interactor(api)
         val Bob: Patient = newPatient()
@@ -104,7 +103,7 @@ class ExampleUnitTest {
 
     @Test
     fun newMeasurementMOVVideo() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
         val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
@@ -120,7 +119,7 @@ class ExampleUnitTest {
 
     @Test
     fun gettingMeasurementFromPatient() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val measurementTimestamp: Long = 1624224079
         val api: Api = createRetrofitApi()
         val interactor =  Interactor(api)
@@ -137,7 +136,7 @@ class ExampleUnitTest {
 
     @Test
     fun pathToFile() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
         val result:  Measurement = Bob.newMeasurement(measurementTimestamp,
@@ -153,7 +152,7 @@ class ExampleUnitTest {
 
     @Test
     fun gettingConclusionFromPatient() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val Bob: Patient = newPatient()
         val conclusion = Bob.getHM3()
         val requested = Conclusion(state   = "HealthyState",
@@ -167,7 +166,7 @@ class ExampleUnitTest {
 
     @Test
     fun deletePatient() {
-        Docme.initSDK(KEY)
+        DocMe.initSDK(KEY)
         val Bob: Patient = newPatient()
         Bob.deletePatient()
        // val sameBob = getPatient(Bob.id)

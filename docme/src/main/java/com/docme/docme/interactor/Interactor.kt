@@ -5,7 +5,6 @@ import android.content.res.AssetFileDescriptor
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import com.docme.docme.api.Api
 import com.docme.docme.data.Conclusion
 import com.docme.docme.data.Measurement
@@ -36,7 +35,7 @@ fun createRetrofitApi(): Api {
     httpClient.addInterceptor { chain ->
         val request: Request = chain.request()
             .newBuilder()
-            .addHeader("x-rapidapi-key", Docme.getKey())
+            .addHeader("x-rapidapi-key", DocMe.getKey())
             .build()
         chain.proceed(request)
     }
@@ -109,7 +108,7 @@ class Interactor(val apiService: Api) {
 
         val request = Request.Builder()
             .url("$BASE_URL/patient/$patientId/measurement")
-            .addHeader("X-RapidAPI-Key", Docme.getKey())
+            .addHeader("X-RapidAPI-Key", DocMe.getKey())
             .post(requestBody).build()
 
 

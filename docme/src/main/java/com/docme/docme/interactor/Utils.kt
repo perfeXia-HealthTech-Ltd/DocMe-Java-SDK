@@ -23,7 +23,7 @@ class NotAppropriateSize(): Exception("DocMe response: Not appropriate size of v
 /**
  * Setting to authorize the user with API key
  */
-class Docme {
+class DocMe {
     companion object {
         private var KEY: String = ""
 

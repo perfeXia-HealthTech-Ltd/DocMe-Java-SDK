@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.docme.docme.data.Patient
-import com.docme.docme.interactor.Docme
+import com.docme.docme.interactor.DocMe
 
 const val PERMIT_READ_FILES = 1
 const val PICK_VIDEO_FILE = 2
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun runTest() {
-        Docme.initSDK("YOUR_DOCME_API_KEY")
+        DocMe.initSDK("YOUR_DOCME_API_KEY")
 
         val p = Patient.newPatient()
         val pCopy = Patient.getPatient(p.id)
