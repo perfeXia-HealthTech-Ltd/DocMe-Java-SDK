@@ -22,9 +22,10 @@ import java.io.File
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+    private val KEY = "YOUR_DOCME_API_KEY"
+
     @Test
     fun idIsCorrect() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val Bob: Patient = newPatient()
         val sameBob: Patient = getPatient(Bob.id)
@@ -33,7 +34,6 @@ class ExampleUnitTest {
 
     @Test
     fun sameResult() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val Bob: Patient = newPatient()
         val Masha: Patient = newPatient()
@@ -49,7 +49,6 @@ class ExampleUnitTest {
 
     @Test
     fun simpleGetMeasurment() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val measurementTimestamp: Long = 1624224079
         val pathToFile: String = "VIDEO_PATH_ON_YOUR_COMPUTER"
@@ -65,7 +64,6 @@ class ExampleUnitTest {
 
     @Test
     fun getConclusion() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val api: Api = createRetrofitApi()
         val interactor =  Interactor(api)
@@ -82,7 +80,6 @@ class ExampleUnitTest {
 
     @Test
     fun newMeasurementMP4Video() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val api: Api = createRetrofitApi()
         val interactor =  Interactor(api)
@@ -106,7 +103,6 @@ class ExampleUnitTest {
 
     @Test
     fun newMeasurementMOVVideo() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
@@ -123,7 +119,6 @@ class ExampleUnitTest {
 
     @Test
     fun gettingMeasurementFromPatient() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val measurementTimestamp: Long = 1624224079
         val api: Api = createRetrofitApi()
@@ -141,7 +136,6 @@ class ExampleUnitTest {
 
     @Test
     fun pathToFile() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val Bob: Patient = newPatient()
         val measurementTimestamp: Long = 1624224079
@@ -158,7 +152,6 @@ class ExampleUnitTest {
 
     @Test
     fun gettingConclusionFromPatient() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val Bob: Patient = newPatient()
         val conclusion = Bob.getHM3()
@@ -173,7 +166,6 @@ class ExampleUnitTest {
 
     @Test
     fun deletePatient() {
-        val KEY = "383efded5bmsh5a4cdd9353ec742p176864jsnfcbb6e3aeda0"
         Docme.initSDK(KEY)
         val Bob: Patient = newPatient()
         Bob.deletePatient()
