@@ -125,12 +125,12 @@ class Interactor(val apiService: Api) {
         val measurement: Measurement
 
         if(video.length() > MAX_SIZE_IN_BYTES) {
-            throw NotAppropriateSize()
+            throw NotAppropriateSizeException()
         }
 
         val duration = timeInSeconds(video.path)
         if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
-            throw NotAppropriateDuration()
+            throw NotAppropriateDurationException()
         }
 
         if (videoName.substringAfterLast('.') == "mp4") {
@@ -138,7 +138,7 @@ class Interactor(val apiService: Api) {
         } else if (videoName.substringAfterLast('.') == "mov") {
             measurement = makeUploadWithFormat(MEDIA_TYPE_MOV!!, client, patientId, FileInputStream(video).readBytes(), videoName, measurementTimestamp)
         } else {
-            throw NotAvailableFormat()
+            throw NotAvailableFormatException()
         }
 
        return measurement
@@ -208,12 +208,12 @@ class Interactor(val apiService: Api) {
      */
     fun newMeasurement(context: Context, patientId: String, measurementTimestamp: Long, uri: Uri): Measurement {
         if (getFileSize(context, uri)!! > MAX_SIZE_IN_BYTES) {
-            throw NotAppropriateSize()
+            throw NotAppropriateSizeException()
         }
 
         val duration = timeInSeconds(context, uri)
         if (duration < MIN_TIME_LIMIT || duration > MAX_TIME_LIMIT) {
-            throw NotAppropriateDuration()
+            throw NotAppropriateDurationException()
         }
 
         val client = OkHttpClient()
